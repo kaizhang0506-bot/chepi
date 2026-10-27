@@ -1,0 +1,8 @@
+import {encodePsd} from './psd-core';
+export {encodePsd} from './psd-core';
+import { zipSync } from 'fflate';
+import { PARTS, type Project, type Part, type PartName } from './model';
+import { renderPart, layerCanvas, download, pngBlob } from './render';
+import { PHYSICAL_SPECS,TARGET_DPI,targetPixels } from './part-specs';
+export async function exportPart(project: Project,name: PartName,format: 'psd'|'png'): Promise<void> {const part=project.parts[name];if(!part.layers.length)throw new Error('当前部位没有素材');const blob=format==='psd'?new Blob([await encodePsd(part,PHYSICAL_SPECS[name])],{type:'image/vnd.adobe.photoshop'}):await pngBlob(await renderPart(part));download(blob,`${project.name}-${name}-设计稿-${part.width}x${part.height}.${format}`);}
+export async function exportAll(project: Project,onProgress: (s:string)=>void): Promise<void> {const files:Record<string,Uint8Array>={};for(const name of PARTS){if(!project.parts[name].layers.length)throw new Error(`${name} 尚无素材，请先完成该部位再导出整套。`);}for(const name of PARTS){onProgress(`正在编码 ${name}…`);await new Promise(r=>setTimeout(r,30));files[`${name}-设计稿.psd`]=new Uint8Array(await encodePsd(project.parts[name],PHYSICAL_SPECS[name]));}files['母版规格与交付说明.json']=new TextEncoder().encode(JSON.stringify({notice:'当前为低分辨率分层设计稿，不是原尺寸150 DPI生产文件。PSD分辨率元数据按真实像素与厘米尺寸计算。提高DPI标签不会增加图像细节。PNG以像素为准。',targetDpi:TARGET_DPI,parts:PARTS.map(name=>({name,...PHYSICAL_SPECS[name],productionPixels:targetPixels(name),designPixels:{width:project.parts[name].width,height:project.parts[name].height}}))},null,2));download(new Blob([zipSync(files,{level:0}).buffer as ArrayBuffer]),`${project.name}-七部位PSD设计稿.zip`);}

@@ -1,0 +1,8 @@
+'use client';
+import {useState} from 'react';
+import {saveCase,type SavedCase} from '@/lib/case-library';
+type Row={id:string;title:string;status:string;username:string;tags:string[]};
+export default function CloudCases({notify}:{notify:(s:string)=>void}){const [rows,setRows]=useState<Row[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[loaded,setLoaded]=useState(false);
+ async function load(){setBusy(true);setError('');try{const r=await fetch('/api/account/cases');const d=await r.json() as {items:Row[];error?:string};if(!r.ok)throw new Error(d.error||'读取失败');setRows(d.items);setLoaded(true);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+ return <section className="case-tag-filter"><strong>云端案例库</strong><p className="hint">登录后可读取自己的上传和已审核的公共案例。原有本机案例需主动上传，管理员才能审核和管理。</p><button className="button secondary" disabled={busy} onClick={()=>void load()}>{busy?'正在读取…':'读取 / 刷新云端案例'}</button>{error&&<p role="alert">{error}</p>}{loaded&&!rows.length&&<p>暂无云端案例。</p>}{rows.map(r=><div key={r.id}><strong>{r.title}</strong><small> · {r.username} · {r.status==='approved'?'已审核':r.status==='pending'?'待审核':'已停用'} · {r.tags.join(' / ')}</small><button className="button secondary" disabled={busy||r.status==='disabled'} onClick={()=>{setBusy(true);setError('');void fetch('/api/account/cases/'+r.id).then(async response=>{const value=await response.json() as SavedCase&{error?:string};if(!response.ok)throw new Error(value.error||'案例读取失败');await saveCase({...value,createdAt:Date.now()});notify('已保存到本机案例库，关闭并重新打开案例库后可选用。');}).catch(e=>setError((e as Error).message)).finally(()=>setBusy(false));}}>保存到本机供设计参考</button></div>)}</section>;
+}
