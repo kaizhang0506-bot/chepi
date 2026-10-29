@@ -1,0 +1,18 @@
+/* Keep center panel in the flexible column at every sidebar state and breakpoint. */
+.workspace.setup-workspace{grid-template-columns:minmax(240px,306px) minmax(0,1fr)}
+.workspace.setup-workspace.left-collapsed,.workspace.separation-mode{grid-template-columns:minmax(0,1fr)}
+.workspace.left-collapsed:not(.setup-workspace):not(.separation-mode){grid-template-columns:minmax(0,1fr) 252px}
+.workspace>.center-panel{min-width:0;max-width:100%}
+.workspace.left-collapsed>.center-panel,.workspace.separation-mode>.center-panel{grid-column:1}
+.workspace .canvas-toolbar{height:auto;min-height:48px;flex-wrap:wrap;gap:8px;padding-top:6px;padding-bottom:6px}
+.workspace .view-switch{min-height:36px;height:auto;gap:14px;flex-wrap:wrap}
+.workspace .view-switch button{min-height:34px;white-space:nowrap}
+.workspace .toolbar-actions{flex-shrink:0}.workspace .safe-toggle{white-space:nowrap}
+.workspace .design-workflow{min-width:0;padding:28px clamp(18px,3vw,48px)}
+.workspace .config-heading h2{overflow-wrap:normal;line-height:1.5}
+.workspace .config-choice>div{min-width:0}.workspace .config-columns{grid-template-columns:repeat(2,minmax(0,1fr))}
+.workspace .brief-table{table-layout:fixed;width:100%}.workspace .brief-table td{overflow-wrap:anywhere}
+@media(max-width:1180px){.workspace.setup-workspace{grid-template-columns:250px minmax(0,1fr)}.workspace.left-collapsed:not(.setup-workspace):not(.separation-mode){grid-template-columns:minmax(0,1fr) 218px}.workspace.setup-workspace.left-collapsed{grid-template-columns:minmax(0,1fr)}.workspace.setup-workspace:not(.left-collapsed) .config-columns{grid-template-columns:1fr}}
+@media(max-width:900px){.workspace>.center-panel{width:100%}.workspace .config-columns{grid-template-columns:1fr}.workspace .design-workflow{padding:20px 16px}}
+/* Separation hides both sidebars; override the setup breakpoint as well. */
+.workspace.setup-workspace.separation-mode{grid-template-columns:minmax(0,1fr)}

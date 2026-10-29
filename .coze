@@ -1,13 +1,24 @@
 [project]
-requires = [ "nodejs-24" ]
+sub_id = "8fdd6d14"
+name = "car-wrap-cloud"
+requires = ["nodejs-24"]
 project_type = "web"
-template = "nextjs"
-version = "0.1.8"
+version = "0.1.9"
+
+[preview]
+preview_enable = "enabled"
 
 [dev]
-build = [ "bash", "./scripts/prepare.sh" ]
-run = [ "bash", "./scripts/dev.sh" ]
+build = ["bash", "./scripts/preview-build.sh"]
+run = ["bash", "./scripts/dev.sh"]
 
 [deploy]
-build = [ "bash", "./scripts/build.sh" ]
-run = [ "bash", "./scripts/start.sh" ]
+build = ["bash", "./scripts/build.sh"]
+run = ["bash", "./scripts/start.sh"]
+
+[deploy.profile]
+kind = "service"
+flavor = "web"
+
+[subprojects]
+path = ["."]

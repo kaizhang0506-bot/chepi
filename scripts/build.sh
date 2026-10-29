@@ -1,4 +1,14 @@
 #!/bin/bash
 set -Eeuo pipefail
-cd "${COZE_WORKSPACE_PATH:-$(pwd)}"
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_DIR"
+
+echo "Installing dependencies..."
+pnpm install --frozen-lockfile
+
+echo "Building the project..."
 pnpm run build
+
+echo "Build completed successfully!"

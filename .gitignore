@@ -47,3 +47,7 @@ yarn-error.log*
 /qa/
 /prepare.cjs
 /account-test-runtime.cjs
+
+# Preview port declaration
+/.preview
+.data/

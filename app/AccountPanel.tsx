@@ -1,5 +1,5 @@
-import {refreshSystemSettings} from '@/lib/system-settings';
 'use client';
+import {refreshSystemSettings} from '@/lib/system-settings';
 import AdminConsole from './AdminConsole';
 import {useState,useEffect,useCallback} from 'react';
 import {type Project,parseProject} from '@/lib/model';
